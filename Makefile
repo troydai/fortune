@@ -6,3 +6,9 @@ image:
 
 docker: image
 	@ docker run --rm -p 8080:8080 echoserver
+
+up:
+	@ docker-compose up -d
+
+down:
+	@ docker-compose down --volumes

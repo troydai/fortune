@@ -9,13 +9,17 @@ import (
 
 var _welcome = []byte("welcome")
 
+const (
+	_port = "8080"
+)
+
 func main() {
-	fmt.Println("starting HTTP server ...")
+	fmt.Printf("starting HTTP server at localhost:%s ...\n", _port)
 	defer fmt.Println("stopping HTTP server ...")
 
 	http.Handle("/echo", http.HandlerFunc(echo))
 	http.Handle("/", http.HandlerFunc(welcome))
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(fmt.Sprintf(":%s", _port), nil)
 }
 
 func welcome(w http.ResponseWriter, _ *http.Request) {

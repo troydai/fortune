@@ -14,3 +14,13 @@ up:
 
 down:
 	@ docker-compose down --volumes
+
+# deploy to kubernetes
+kup:
+	@ kubectl apply -f ./k8s/deployment-dev.yaml
+
+kdown:
+	@ kubectl delete -f ./k8s/deployment-dev.yaml
+
+kportal:
+	@ kubectl exec -n alice -it portal -- bash

@@ -1,8 +1,10 @@
+TAG=$(shell git describe --tags)
+
 run:
 	@ go run cmd/main.go
 
 image:
-	@ docker build . -t echoserver
+	@ docker build . -t echoserver:$(TAG)
 
 docker: image
 	@ docker run --rm -p 8080:8080 echoserver

@@ -3,24 +3,16 @@ TAG=$(shell git describe --tags)
 run:
 	@ go run cmd/main.go
 
-image:
-	@ docker build . -t echoserver:$(TAG)
-
-docker: image
-	@ docker run --rm -p 8080:8080 echoserver
-
 up:
-	@ docker-compose up -d
-
-down:
-	@ docker-compose down --volumes
-
-# deploy to kubernetes
-kup:
+	@ docker build . -t fortune-datastore:dev -f docker/datastore/Dockerfile
+	@ docker build . -t fortune-front:dev -f docker/front/Dockerfile
+	@ docker build . -t fortune-portal:dev -f docker/portal/Dockerfile
+	@ kind load docker-image fortune-datastore:dev fortune-front:dev fortune-portal:dev
 	@ kubectl apply -f ./k8s/deployment-dev.yaml
 
-kdown:
+down:
 	@ kubectl delete -f ./k8s/deployment-dev.yaml
 
-kportal:
-	@ kubectl exec -n alice -it portal -- bash
+portal:
+	@ kubectl exec -n fortune -it portal -- bash
+

@@ -35,7 +35,7 @@ spec:
         env:
         - name: DATASTORE_NAME
           value: http://datastore-svc/fetch
-        imagePullPolicy: Always
+        imagePullPolicy: Never
 ---
 apiVersion: v1
 kind: Service
@@ -83,7 +83,7 @@ spec:
         name: datastore
         ports:
         - containerPort: 8080
-        imagePullPolicy: Always
+        imagePullPolicy: Never
 ---
 apiVersion: v1
 kind: Service

@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 var (
@@ -28,6 +29,8 @@ func main() {
 	if err := s.load(); err != nil {
 		log.Fatalf("fail to load fortune cookies: %s", err.Error())
 	}
+
+	rand.Seed(time.Now().UnixMicro())
 
 	http.Handle("/fetch", http.HandlerFunc(s.fetch))
 	http.ListenAndServe(":8090", nil)

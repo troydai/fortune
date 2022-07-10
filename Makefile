@@ -18,8 +18,17 @@ down:
 portal:
 	@ kubectl exec -n fortune -it portal -- bash
 
+# https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/#create-the-cluster
 setup-kind:
-	@ kind create cluster --name $(CLUSTER) --wait 10m
+	@ curl -LO https://raw.githubusercontent.com/cilium/cilium/1.11.6/Documentation/gettingstarted/kind-config.yaml
+	@ kind create cluster --name $(CLUSTER) --config=./kind/config.yaml
 
 teardown-kind:
 	@ kind delete cluster --name $(CLUSTER)
+
+# https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/#install-the-cilium-cli
+cilium-cli:
+	@ curl -L --remote-name-all https://github.com/cilium/cilium-cli/releases/latest/download/cilium-linux-amd64.tar.gz{,.sha256sum}
+	@ sha256sum --check cilium-linux-amd64.tar.gz.sha256sum
+	@ sudo tar xzvfC cilium-linux-amd64.tar.gz /usr/local/bin
+	@ rm cilium-linux-amd64.tar.gz{,.sha256sum}

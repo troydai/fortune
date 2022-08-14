@@ -13,5 +13,7 @@ FROM alpine:3.14
 RUN mkdir /app
 COPY --from=builder /usr/local/bin/front /app/front
 
+USER 1000
+
 ENTRYPOINT ["/app/front"]
 

@@ -14,4 +14,6 @@ RUN apk add --no-cache fortune
 RUN mkdir /app
 COPY --from=builder /usr/local/bin/datastore /app/datastore
 
+USER 1000
+
 ENTRYPOINT ["/app/datastore"]

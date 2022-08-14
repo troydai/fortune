@@ -20,8 +20,8 @@ portal:
 
 # https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/#create-the-cluster
 setup-kind:
-	@ curl -LO https://raw.githubusercontent.com/cilium/cilium/1.11.6/Documentation/gettingstarted/kind-config.yaml
 	@ kind create cluster --name $(CLUSTER) --config=./kind/config.yaml
+	@ cilium install
 
 teardown-kind:
 	@ kind delete cluster --name $(CLUSTER)

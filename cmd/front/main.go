@@ -81,7 +81,7 @@ func (s *server) fortune(w http.ResponseWriter, req *http.Request) {
 	s.logger.Info(
 		"hit fortune",
 		zap.String("host", os.Getenv("HOSTNAME")),
-		zap.Any("tls", req.TLS),
+		zap.Any("peer-uris", extractCaller(req)),
 	)
 
 	resp, err := s.client.Get(os.Getenv(_envDatastoreUrl))
@@ -106,4 +106,18 @@ func (s *server) fortune(w http.ResponseWriter, req *http.Request) {
 func (s *server) error(w http.ResponseWriter, msg string, err error) {
 	s.logger.Error(msg, zap.Error(err))
 	http.Error(w, msg, http.StatusInternalServerError)
+}
+
+func extractCaller(req *http.Request) []string {
+	if req.TLS == nil || len(req.TLS.PeerCertificates) == 0 {
+		return nil
+	}
+
+	var retval []string
+	for _, c := range req.TLS.PeerCertificates {
+		for _, u := range c.URIs {
+			retval = append(retval, u.String())
+		}
+	}
+	return retval
 }

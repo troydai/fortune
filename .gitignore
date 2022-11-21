@@ -1,3 +1,4 @@
 bin/
 .vscode/
+artifacts/
 kind-config.yaml

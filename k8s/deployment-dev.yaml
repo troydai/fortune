@@ -27,6 +27,8 @@ spec:
       labels:
         app.kubernetes.io/name: front
     spec:
+      hostPID: true
+      # hostNetwork: true
       containers:
       - image: fortune-front:dev
         name: front
@@ -36,6 +38,16 @@ spec:
         - name: DATASTORE_NAME
           value: http://datastore-svc/fetch
         imagePullPolicy: Never
+        volumeMounts:
+          - name: spire-agent-socket
+            mountPath: /run/spire/sockets
+            readOnly: true
+      volumes:
+      - name: spire-agent-socket
+        hostPath:
+          path: /run/spire/sockets
+          type: Directory
+
 ---
 apiVersion: v1
 kind: Service
@@ -60,6 +72,15 @@ spec:
   containers:
   - image: fortune-portal:dev
     name: portal
+    volumeMounts:
+    - name: spire-agent-socket
+      mountPath: /run/spire/sockets
+      readOnly: true
+  volumes:
+  - name: spire-agent-socket
+    hostPath:
+      path: /run/spire/sockets
+      type: Directory
 ---
 apiVersion: apps/v1
 kind: Deployment 

@@ -23,9 +23,10 @@ RUN make build
 
 FROM alpine AS portal
 
-RUN apk --no-cache add dumb-init ca-certificates
+RUN apk --no-cache add dumb-init ca-certificates curl
 RUN mkdir -p /opt/spire/bin
 
+COPY --from=builder /src/artifacts/portal /app/portal
 COPY --from=spire-agent-builder /src/spire/bin/spire-agent /opt/spire/bin/spire-agent
 
 ENTRYPOINT ["sleep", "infinity"]

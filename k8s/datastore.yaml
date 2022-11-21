@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  labels:
+    app.kubernetes.io/name: datastore
+  name: datastore
+  namespace: fortune
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: datastore
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: datastore
+    spec:
+      containers:
+      - image: fortune-datastore:dev
+        name: datastore
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datastore-svc
+  namespace: fortune
+spec:
+  ports:
+  - port: 80
+    targetPort: 8090
+  selector:
+    app.kubernetes.io/name: datastore

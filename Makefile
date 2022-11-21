@@ -6,14 +6,14 @@ build:
 	@ mkdir -p artifacts
 	@ CGO_ENALBE=0 GOOS=linux go build -v -o artifacts/front cmd/front/main.go
 	@ CGO_ENALBE=0 GOOS=linux go build -v -o artifacts/datastore cmd/datastore/main.go
+	@ CGO_ENALBE=0 GOOS=linux go build -v -o artifacts/portal cmd/portal/main.go
 
 run:
 	@ go run cmd/main.go
 
 up: build-portal-image build-front-image build-datastore-image
 	@ kubectl cluster-info --context kind-$(CLUSTER)
-	@ kind load docker-image fortune-datastore:dev fortune-front:dev fortune-portal:dev --name $(CLUSTER)
-	@ kubectl apply -f ./k8s/deployment-dev.yaml
+	@ scripts/k8s/apply.sh
 
 down:
 	@ kubectl delete -f ./k8s/deployment-dev.yaml
@@ -60,12 +60,15 @@ cilium-cli:
 .PHONY: build-portal-image
 build-portal-image:
 	@ docker build . --target portal -t fortune-portal:dev
+	@ kind load docker-image fortune-portal:dev --name $(CLUSTER)
 
 .PHONY: build-front-image
 build-front-image:
 	@ docker build . --target front -t fortune-front:dev
+	@ kind load docker-image fortune-front:dev --name $(CLUSTER)
 
 .PHONY: build-datastore-image
 build-database-image:
 	@ docker build . --target datastore -t fortune-datastore:dev
+	@ kind load docker-image fortune-datastore:dev --name $(CLUSTER)
 
